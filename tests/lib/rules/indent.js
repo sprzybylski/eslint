@@ -478,6 +478,22 @@ var foo = 1,
         },
         {
             code: `\
+var foo = 1,
+    bar = 2,
+    baz = 3
+;`,
+            options: [2, { VariableDeclarator: { var: 2 } }]
+        },
+        {
+            code: `\
+var foo = 1,
+    bar = 2,
+    baz = 3
+    ;`,
+            options: [2, { VariableDeclarator: { var: 2 } }]
+        },
+        {
+            code: `\
 var abc =
     {
       a: 1,
@@ -2572,6 +2588,8 @@ export {
             parserOptions: { sourceType: "module" }
         }
     ],
+
+
     invalid: [
         {
             code: `\
@@ -3610,11 +3628,10 @@ var path     = require('path')
             output: `\
 var path     = require('path')
   , crypto    = require('crypto')
-  ;`,
+;`,
             options: [2],
             errors: expectedErrors([
-                [2, 2, 1, "Punctuator"],
-                [3, 2, 0, "Punctuator"]
+                [2, 2, 1, "Punctuator"]
             ])
         },
         {
@@ -3625,10 +3642,9 @@ var a = 1
             output: `\
 var a = 1
     ,b = 2
-    ;`,
+;`,
             errors: expectedErrors([
                 [2, 4, 3, "Punctuator"],
-                [3, 4, 0, "Punctuator"]
             ])
         },
         {
