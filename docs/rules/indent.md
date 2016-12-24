@@ -84,6 +84,7 @@ This rule has an object option:
     * `arguments` (off by default) enforces indentation level for arguments in a call expression. This can either be a number indicating indentation level, or the string `"first"` indicating that all arguments of the expression must be aligned with the first argument.
 * `"ArrayExpression"` (default: 1) enforces indentation level for elements in arrays. It can also be set to the string `"first"`, indicating that all the elements in the array should be aligned with the first element.
 * `"ObjectExpression"` (default: 1) enforces indentation level for properties in objects. It can be set to the string `"first"`, indicating that all properties in the object should be aligned with the first property.
+* `"flatTernaryExpressions": true` (`false` by default) requires no indentation for ternary expressions which are nested in other ternary expressions.
 
 Level of indentation denotes the multiple of the indent specified. Example:
 
@@ -522,6 +523,56 @@ Examples of **correct** code for this rule with the `2, { "ObjectExpression": "f
 
 var foo = { bar: 1,
             baz: 2 };
+```
+
+### flatTernaryExpressions
+
+Examples of **incorrect** code for this rule with the default `4, { "flatTernaryExpressions": false }` option:
+
+```js
+/*eslint indent: ["error", 4, { "flatTernaryExpressions": false }]*/
+
+foo
+    ? bar
+    : baz
+    ? qux
+    : boop;
+```
+
+Examples of **correct** code for this rule with the default `4, { "flatTernaryExpressions": false }` option:
+
+```js
+/*eslint indent: ["error", 4, { "flatTernaryExpressions": false }]*/
+
+foo
+    ? bar
+    : baz
+        ? qux
+        : boop;
+```
+
+Examples of **incorrect** code for this rule with the `4, { "flatTernaryExpressions": true }` option:
+
+```js
+/*eslint indent: ["error", 4, { "flatTernaryExpressions": true }]*/
+
+foo
+    ? bar
+    : baz
+        ? qux
+        : boop;
+```
+
+Examples of **correct** code for this rule with the `4, { "flatTernaryExpressions": true }` option:
+
+```js
+/*eslint indent: ["error", 4, { "flatTernaryExpressions": true }]*/
+
+foo
+    ? bar
+    : baz
+    ? qux
+    : boop;
 ```
 
 

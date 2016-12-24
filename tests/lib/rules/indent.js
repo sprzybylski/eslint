@@ -2586,6 +2586,86 @@ export {
     baz
 }`,
             parserOptions: { sourceType: "module" }
+        },
+        {
+            code: `\
+foo
+    ? bar
+    : baz
+`,
+            options: [4, { flatTernaryExpressions: true }]
+        },
+        {
+            code: `\
+foo ?
+    bar :
+    baz
+`,
+            options: [4, { flatTernaryExpressions: true }]
+        },
+        {
+            code: `\
+foo ?
+    bar
+    : baz
+`,
+            options: [4, { flatTernaryExpressions: true }]
+        },
+        {
+            code: `\
+foo
+    ? bar :
+    baz
+`,
+            options: [4, { flatTernaryExpressions: true }]
+        },
+        {
+            code: `\
+foo
+    ? bar
+    : baz
+    ? qux
+    : foobar
+    ? boop
+    : beep
+`,
+            options: [4, { flatTernaryExpressions: true }]
+        },
+        {
+            code: `\
+foo ?
+    bar :
+    baz ?
+    qux :
+    foobar ?
+    boop :
+    beep
+`,
+            options: [4, { flatTernaryExpressions: true }]
+        },
+        {
+            code: `\
+foo
+    ? bar
+    : baz
+        ? qux
+        : foobar
+            ? boop
+            : beep
+`,
+            options: [4, { flatTernaryExpressions: false }]
+        },
+        {
+            code: `\
+foo ?
+    bar :
+    baz ?
+        qux :
+        foobar ?
+            boop :
+            beep
+`,
+            options: [4, { flatTernaryExpressions: false }]
         }
     ],
 
@@ -5113,6 +5193,170 @@ export {
 }`,
             parserOptions: { sourceType: "module" },
             errors: expectedErrors([[2, 4, 0, "Identifier"], [3, 4, 8, "Identifier"], [4, 4, 2, "Identifier"]])
+        },
+        {
+            code: `\
+foo
+    ? bar
+: baz
+`,
+            output: `\
+foo
+    ? bar
+    : baz
+`,
+            options: [4, { flatTernaryExpressions: true }],
+            errors: expectedErrors([3, 4, 0, "Punctuator"])
+        },
+        {
+            code: `\
+foo ?
+    bar :
+baz
+`,
+            output: `\
+foo ?
+    bar :
+    baz
+`,
+            options: [4, { flatTernaryExpressions: true }],
+            errors: expectedErrors([3, 4, 0, "Identifier"])
+        },
+        {
+            code: `\
+foo ?
+    bar
+  : baz
+`,
+            output: `\
+foo ?
+    bar
+    : baz
+`,
+            options: [4, { flatTernaryExpressions: true }],
+            errors: expectedErrors([3, 4, 2, "Punctuator"])
+        },
+        {
+            code: `\
+foo
+    ? bar :
+baz
+`,
+            output: `\
+foo
+    ? bar :
+    baz
+`,
+            options: [4, { flatTernaryExpressions: true }],
+            errors: expectedErrors([3, 4, 0, "Identifier"])
+        },
+        {
+            code: `\
+foo
+    ? bar
+    : baz
+        ? qux
+        : foobar
+            ? boop
+            : beep
+`,
+            output: `\
+foo
+    ? bar
+    : baz
+    ? qux
+    : foobar
+    ? boop
+    : beep
+`,
+            options: [4, { flatTernaryExpressions: true }],
+            errors: expectedErrors([
+                [4, 4, 8, "Punctuator"],
+                [5, 4, 8, "Punctuator"],
+                [6, 4, 12, "Punctuator"],
+                [7, 4, 12, "Punctuator"]
+            ])
+        },
+        {
+            code: `\
+foo ?
+    bar :
+    baz ?
+        qux :
+        foobar ?
+            boop :
+            beep
+`,
+            output: `\
+foo ?
+    bar :
+    baz ?
+    qux :
+    foobar ?
+    boop :
+    beep
+`,
+            options: [4, { flatTernaryExpressions: true }],
+            errors: expectedErrors([
+                [4, 4, 8, "Identifier"],
+                [5, 4, 8, "Identifier"],
+                [6, 4, 12, "Identifier"],
+                [7, 4, 12, "Identifier"]
+            ])
+        },
+        {
+            code: `\
+foo
+    ? bar
+    : baz
+    ? qux
+    : foobar
+    ? boop
+    : beep
+`,
+            output: `\
+foo
+    ? bar
+    : baz
+        ? qux
+        : foobar
+            ? boop
+            : beep
+`,
+            options: [4, { flatTernaryExpressions: false }],
+            errors: expectedErrors([
+                [4, 8, 4, "Punctuator"],
+                [5, 8, 4, "Punctuator"],
+                [6, 12, 4, "Punctuator"],
+                [7, 12, 4, "Punctuator"]
+            ])
+        },
+        {
+            code: `\
+foo ?
+    bar :
+    baz ?
+    qux :
+    foobar ?
+    boop :
+    beep
+`,
+            output: `\
+foo ?
+    bar :
+    baz ?
+        qux :
+        foobar ?
+            boop :
+            beep
+`,
+            options: [4, { flatTernaryExpressions: false }],
+            errors: expectedErrors([
+                [4, 8, 4, "Identifier"],
+                [5, 8, 4, "Identifier"],
+                [6, 12, 4, "Identifier"],
+                [7, 12, 4, "Identifier"]
+            ])
         }
     ]
 });
