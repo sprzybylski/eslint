@@ -93,7 +93,38 @@ ruleTester.run("brace-style", rule, {
         {
             code: "switch(x) {}",
             options: ["allman", { allowSingleLine: true }]
-        }
+        },
+
+        // https://github.com/eslint/eslint/issues/7908
+        "{}",
+        `
+            if (foo) {
+
+            }
+
+            {
+
+            }
+        `,
+        `
+            switch (foo) {
+                case bar:
+                    baz();
+                    {
+                        qux();
+                    }
+            }
+        `,
+        `
+            {
+            }
+        `,
+        `
+            {
+                {
+                }
+            }
+        `
     ],
 
     invalid: [
